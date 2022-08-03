@@ -16,15 +16,56 @@
     <body>
         <div class="container">
             <div class="row">
-                <div class="col-6">
-                    <div class="form-group">
-                        <label> </label>
+                <div class="col-12 mt-3">
+                    <div class="form-group" style="background-color: rgb(0, 255, 170); text-align: center;">
+                        <form action="/post-crud" method="POST">
+                            <div class="col-12">
+                                <label for="validationCustom01" class="form-label">category_name</label>
+                                <input type="text" class="form-control" id="category_name" name="category_name"
+                                    required>
+                                <div class="valid-feedback">
+                                    Looks good!
+                                </div>
+                            </div>
+                            <br>
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
 
                     </div>
 
                 </div>
             </div>
         </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">name</th>
+                    <th scope="col">create at</th>
+                    <th scope="col">update at</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (let i=0 ; i < dataDB.length; i++) { %>
+                    <tr>
+                        <th scope="row">
+                            <%= dataDB[i].category_id %>
+                        </th>
+                        <td>
+                            <%= dataDB[i].category_name %>
+                        </td>
+                        <td>
+                            <%= dataDB[i].createdAt %>
+                        </td>
+                        <td>
+                            <%= dataDB[i].updatedAt %>
+                        </td>
+                    </tr>
+                    <% } %>
+
+            </tbody>
+        </table>
     </body>
 
 </html>

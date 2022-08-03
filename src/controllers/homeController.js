@@ -1,4 +1,5 @@
-import db from '../models/index'
+import db from '../models/index';
+import servicesCRUD from '../services/servicesCRUD';
 
 let getHomePage = async (req, res) => {
     try {
@@ -19,8 +20,28 @@ let getCrud = async (req, res) => {
         console.log(error);
     }
 }
+let postCrud = async (req, res) => {
+    let message = await servicesCRUD.createCategory(req.body);
+    return res.send(message);
+};
 
-module.exports = {
+let getCategory = async (req, res) => {
+    try {
+        let dataDB = await servicesCRUD.getCategory();
+        return res.render("crud.ejs", {
+            dataDB: dataDB
+        });
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
+getCategory
+module.exports =
+{
     getHomePage: getHomePage,
-    getCrud: getCrud
+    getCrud: getCrud,
+    postCrud: postCrud,
+    getCategory: getCategory,
 }
