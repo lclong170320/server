@@ -13,6 +13,11 @@ let initWebRouters = (app) => {
     router.get('/crud', homController.getCrud);
     router.post('/post-crud', homController.postCrud);
     router.get('/get-category', homController.getCategory);
+    router.get('/category-sua', homController.suaCategory);
+    router.post('/put-crud', homController.putCrud);
+    router.get('/category-xoa', homController.xoaCategory);
+
+
 
 
 
