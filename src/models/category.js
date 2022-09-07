@@ -20,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true
     },
-    category_name: DataTypes.STRING
+    category_name: DataTypes.STRING,
+    category_img: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'category',

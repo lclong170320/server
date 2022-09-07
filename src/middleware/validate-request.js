@@ -1,5 +1,7 @@
 module.exports = validateRequest;
 
+const fs = require("fs");
+
 function validateRequest(req, next, schema) {
   const options = {
     abortEarly: false, // include all errors
@@ -8,6 +10,9 @@ function validateRequest(req, next, schema) {
   };
   const { error, value } = schema.validate(req.body, options);
   if (error) {
+    fs.unlink(req.file.path, err => {
+      return err;
+    })
     next(`Validation error: ${error.details.map((x) => x.message).join(", ")}`);
   } else {
     req.body = value;
