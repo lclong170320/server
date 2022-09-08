@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
+      product_id: DataTypes.INTEGER,
       quantity: DataTypes.INTEGER,
       sold: DataTypes.INTEGER,
     },

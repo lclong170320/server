@@ -1,6 +1,8 @@
 import { Op } from "sequelize";
 import db from "../models/index";
 
+const fs = require("fs");
+
 async function getAll(queries) {
   const start = queries.start ? parseInt(queries.start) : 1;
   const limit = queries.limit ? parseInt(queries.limit) : 10;
@@ -62,10 +64,16 @@ async function create(params) {
 
 async function update(id, params) {
   const category = await getCategory(id);
-  console.log(category);
+  if(params.category_img != ''){
+    fs.unlink(category.category_img, err => {
+      console.log('Xoá file thành công');
+    })
+  }
   if (category) {
     await db.category.update(
-      { category_name: params.category_name },
+      { category_name: params.category_name,
+         category_img: params.category_img
+      },
       {
         where: {
           category_id: id,
@@ -77,6 +85,9 @@ async function update(id, params) {
 
 async function _delete(id) {
   const category = await getCategory(id);
+  fs.unlink(category.category_img, err => {
+    console.log('Xoá file thành công');
+  })
   await category.destroy();
 }
 

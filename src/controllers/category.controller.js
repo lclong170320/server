@@ -22,8 +22,8 @@ var upload = multer({ storage: storage });
 // routes
 
 router.get("/", getAll);
-router.post("/", upload.single("category_img"),createSchema, create);
-router.put("/:id", updateSchema, update);
+router.post("/", upload.single("category_img"), createSchema, create);
+router.put("/:id", upload.single("category_img"), updateSchema, update);
 router.delete("/:id", _delete);
 
 module.exports = router;
@@ -51,30 +51,43 @@ function create(req, res, next) {
     params.category_img = file.path;
     categoryService
       .create(params)
-      .then(() => res.json({ message: "Category created" }))
+      .then(() => res.json({ message: "Category created successfully" }))
       .catch(next);
   } else {
   fs.unlink(file.path, err => {
     res
       .status(403)
       .contentType("text/plain")
-      .end("Only .png files are allowed!");
+      .end("Không phải là ảnh vui lòng chọn lại");
   });
 }
 }
 
 
 function update(req, res, next) {
-  categoryService
-    .update(req.params.id, req.body)
-    .then(() => res.json({ message: "User updated" }))
+  const file = req.file;
+  if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png')
+  {
+    const params = req.body;
+    params.category_img = file.path;
+    categoryService
+    .update(req.params.id, params)
+    .then(() => res.json({ message: "Category updated successfully" }))
     .catch(next);
+  } else {
+  fs.unlink(file.path, err => {
+    res
+      .status(403)
+      .contentType("text/plain")
+      .end("Không phải là ảnh vui lòng chọn lại");
+  });
+}
 }
 
 function _delete(req, res, next) {
   categoryService
     .delete(req.params.id)
-    .then(() => res.json({ message: "User deleted" }))
+    .then(() => res.json({ message: "Category deleted successfully" }))
     .catch(next);
 }
 
@@ -91,6 +104,7 @@ function createSchema(req, res, next) {
 function updateSchema(req, res, next) {
   const schema = Joi.object({
     category_name: Joi.string().required().empty(""),
+    category_img: Joi.any(),
   });
   validateRequest(req, next, schema);
 }
