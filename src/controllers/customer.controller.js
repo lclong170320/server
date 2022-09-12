@@ -5,8 +5,7 @@ const multer = require("multer");
 const fs = require("fs");
 
 import validateRequest from "../middleware/validate-request.js";
-
-import categoryService from "../services/category.service.js";
+import customerService from "../services/customer.service";
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -32,14 +31,14 @@ module.exports = router;
 
 function getAll(req, res, next) {
   const queries = {
-    category_id: req.query.category_id,
-    category_name: req.query.category_name,
+    customer_id: req.query.customer_id,
+    customer_name: req.query.customer_name,
     limit: req.query.limit,
     start: req.query.start,
   };
-  categoryService
+  customerService
     .getAll(queries)
-    .then((category) => res.json(category))
+    .then((customer) => res.json(customer))
     .catch(next);
 }
 
@@ -66,7 +65,6 @@ function create(req, res, next) {
 
 function update(req, res, next) {
   const file = req.file;
-  console.log(req);
   if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png')
   {
     const params = req.body;

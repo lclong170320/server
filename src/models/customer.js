@@ -1,4 +1,5 @@
 "use strict";
+const { INTEGER } = require("sequelize");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class customer extends Model {
@@ -13,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 
       customer.hasMany(models.order, { foreignKey: "order_id" });
 
-      customer.belongsTo(models.account, { foreignKey: "username" });
+      customer.hasOne(models.account, { foreignKey: "account_id" });
     }
   }
   customer.init(
@@ -23,10 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
+      account_id: DataTypes.INTEGER,
       customer_name: DataTypes.STRING,
       customer_dob: DataTypes.DATE,
-      customer_address: DataTypes.TEXT,
-      address_avatar: DataTypes.TEXT,
+      customer_avatar: DataTypes.TEXT,
     },
     {
       sequelize,

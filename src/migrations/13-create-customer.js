@@ -8,6 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      account_id: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: "accounts",
+          key: "account_id",
+        },
+      },
       customer_name: {
         allowNull: false,
         type: Sequelize.STRING
@@ -16,13 +24,17 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      customer_address: {
-        allowNull: false,
+      customer_avatar: {
         type: Sequelize.TEXT
       },
-      address_avatar: {
-        type: Sequelize.TEXT
-      }
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {

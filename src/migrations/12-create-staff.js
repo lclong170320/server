@@ -8,6 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      account_id: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: "accounts",
+          key: "account_id",
+        },
+      },
       staff_name: {
         allowNull: false,
         type: Sequelize.STRING
@@ -21,7 +29,15 @@ module.exports = {
       },
       staff_avatar: {
         type: Sequelize.TEXT
-      }
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {

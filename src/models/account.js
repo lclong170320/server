@@ -9,19 +9,21 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      account.hasOne(models.customer, { foreignKey: "username" });
-      account.hasOne(models.staff, { foreignKey: "username" });
+      account.belongsTo(models.customer, { foreignKey: "account_id" });
+      account.belongsTo(models.staff, { foreignKey: "staff_id" });
     }
   }
   account.init(
     {
-      username: {
+      account_id: {
         type: DataTypes.STRING,
         primaryKey: true,
       },
+      username: {
+        type: DataTypes.STRING,
+        unique: true,
+      },
       password: DataTypes.STRING,
-      staff_id: DataTypes.INTEGER,
-      customer_id: DataTypes.INTEGER,
     },
     {
       sequelize,
