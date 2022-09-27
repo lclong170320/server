@@ -18,18 +18,10 @@ module.exports = {
       },
       staff_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "staffs",
           key: "staff_id",
-        },
-      },
-      status_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "order_statuses",
-          key: "status_id",
         },
       },
       order_total: {

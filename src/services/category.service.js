@@ -64,13 +64,35 @@ async function create(params) {
 
 async function update(id, params) {
   const category = await getCategory(id);
-  if(params.category_img != ''){
-    fs.unlink(category.category_img, err => {
+  if (
+    await db.category.findOne({
+      where: { category_name: params.category_name, 
+      category_id: !id,
+      },  
+    })
+  ) {
+    fs.unlink(params.category_img, err => {
       console.log('Xoá file thành công');
     })
+    throw 'Category name "' + params.category_name + '" is Exist';
   }
-  if (category) {
-    await db.category.update(
+
+  if((params.category_img === undefined && category) || (params.category_img === '' && category )) {
+    return await db.category.update(
+      { category_name: params.category_name,
+      },
+      {
+        where: {
+          category_id: id,
+        },
+      }
+    );
+  }
+  if (category && params.category_img !== undefined) {
+      fs.unlink(category.category_img, err => {
+        console.log('Xoá file 1 thành công');
+      })
+    return await db.category.update(
       { category_name: params.category_name,
          category_img: params.category_img
       },

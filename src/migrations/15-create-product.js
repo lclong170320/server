@@ -20,15 +20,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      product_img: {
-        type: Sequelize.STRING,
-      },
       product_describe: {
         type: Sequelize.TEXT,
-      },
-      product_salePrice: {
-        allowNull: false,
-        type: Sequelize.FLOAT,
       },
       product_price: {
         allowNull: false,

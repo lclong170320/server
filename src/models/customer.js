@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 
       customer.hasMany(models.order, { foreignKey: "order_id" });
 
-      customer.hasOne(models.account, { foreignKey: "account_id" });
+      customer.belongsTo(models.account, { foreignKey: "account_id" });
     }
   }
   customer.init(
@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       account_id: DataTypes.INTEGER,
       customer_name: DataTypes.STRING,
       customer_dob: DataTypes.DATE,
+      customer_phone:  DataTypes.INTEGER,
       customer_avatar: DataTypes.TEXT,
     },
     {

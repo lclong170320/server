@@ -14,7 +14,11 @@ module.exports = (sequelize, DataTypes) => {
       product.hasMany(models.discount, { foreignKey: "product_id" });
       product.hasMany(models.favorite, { foreignKey: "product_id" });
       product.hasMany(models.image, { foreignKey: "product_id" });
-      product.belongsTo(models.depot, { foreignKey: "product_id" });
+      product.hasOne(models.storage, { foreignKey: "product_id" });
+
+      product.hasMany(models.order_detail, { foreignKey: "product_id" });
+
+
     }
   }
 
@@ -27,9 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       category_id: DataTypes.INTEGER,
       product_name: DataTypes.STRING,
-      product_img: DataTypes.TEXT,
       product_describe: DataTypes.TEXT,
-      product_salePrice: DataTypes.FLOAT,
       product_price: DataTypes.FLOAT,
       provider: DataTypes.TEXT,
     },

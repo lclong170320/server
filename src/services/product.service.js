@@ -16,6 +16,38 @@ async function getAll(queries) {
     where: {
       [Op.and]: check.productWhereCond,
     },
+    include: [
+      {
+        model: db.category,
+        as: "category",
+        attributes: {
+          exclude: ["category_img", "createdAt", "updatedAt"],
+        },
+      },
+      {
+        model: db.storage,
+        as: "storage",
+        attributes: {
+          exclude: ["storage_id", "createdAt", "updatedAt"],
+        },
+      },
+      {
+        model: db.image,
+        as: "images",
+        attributes: {
+          exclude: ["image_id", , "product_id", "createdAt", "updatedAt"],
+        },
+      },
+      {
+        model: db.discount,
+        attributes: {
+          exclude: ["discount_id", "createdAt", "updatedAt"],
+        },
+      },
+    ],
+    attributes: {
+      exclude: ["category_id"],
+    },
     offset: check.offset,
     limit: check.limit,
   });
@@ -47,9 +79,7 @@ function productQuery(queries) {
   return checkOptions;
 }
 
-
-async function create(params) {
-  // validate;
+async function create(params, manyFiles) {
   if (
     await db.product.findOne({
       where: { product_name: params.product_name },
@@ -57,35 +87,61 @@ async function create(params) {
   ) {
     throw 'Product name "' + params.product_name + '" is Exist';
   }
-  const product = await db.product.create({ 
+  const product = await db.product.create({
     product_name: params.product_name,
     category_id: params.category_id,
-    product_img: params.product_img,
     product_describe: params.product_describe,
-    product_salePrice: params.product_salePrice,
     product_price: params.product_price,
-    provider: params.provider
-     });
+    provider: params.provider,
+  });
 
-    await db.depot.create({
+  await db.storage.create({
+    product_id: product.product_id,
+    product_quantity: params.product_quantity,
+    product_sold: 0,
+  });
+
+  for (let i = 0; i < manyFiles.length; i++) {
+    await db.image.create({
       product_id: product.product_id,
-      quantity: params.quantity,
-      sold: 0,
-    })
-    
+      image_name: manyFiles[i],
+    });
+  }
 }
 
-async function update(id, params) {
+async function update(id, params, manyFiles) {
   const product = await getProduct(id);
-  if(params.product_img != ''){
-    fs.unlink(product.product_img, err => {
-      console.log('Xoá file thành công');
-    })
+  const storage = await db.storage.findOne({
+    where: { product_id: product.product_id },
+  });
+  const image = await db.image.findAll({
+    where: { product_id: product.product_id },
+  });
+  const check = await db.product.findOne({
+    where: { product_name: params.product_name, product_id: !id },
+  });
+  if (check) {
+    fs.unlink(params.product_img, (err) => {
+      console.log("Xoá file thành công");
+    });
+    throw 'Product name "' + params.product_name + '" is Exist';
   }
-  if (product) {
-    await db.product.update(
-      { product_name: params.product_name,
-         product_img: params.product_img
+
+  if (manyFiles.length > 0) {
+    console.log(manyFiles.length)
+    for (let i = 0; i < image.length; i++) {
+      fs.unlink(image[i].image_name, (err) => {
+        console.log("Xoá file 1 thành công");
+      });
+      await image[i].destroy();
+    }
+    const uploadProduct = await db.product.update(
+      {
+        product_name: params.product_name,
+        category_id: params.category_id,
+        product_describe: params.product_describe,
+        product_price: params.product_price,
+        provider: params.provider,
       },
       {
         where: {
@@ -93,14 +149,74 @@ async function update(id, params) {
         },
       }
     );
+    if (uploadProduct) {
+      await db.storage.update(
+        {
+          product_quantity: params.product_quantity,
+          product_sold: storage.product_sold,
+        },
+        {
+          where: {
+            product_id: id,
+          },
+        }
+      );
+      for (let i = 0; i < manyFiles.length; i++) {
+        await db.image.create({
+          product_id: product.product_id,
+          image_name: manyFiles[i],
+        });
+      }
+      return true;
+    }
+  }
+
+  if (manyFiles.length == 0) {
+    const uploadProduct = await db.product.update(
+      {
+        product_name: params.product_name,
+        category_id: params.category_id,
+        product_describe: params.product_describe,
+        product_price: params.product_price,
+        provider: params.provider,
+      },
+      {
+        where: {
+          product_id: id,
+        },
+      }
+    );
+    if (uploadProduct) {
+      return await db.storage.update(
+        {
+          product_quantity: params.product_quantity,
+          product_sold: storage.product_sold,
+        },
+        {
+          where: {
+            product_id: id,
+          },
+        }
+      );
+    }
   }
 }
 
 async function _delete(id) {
   const product = await getProduct(id);
-  fs.unlink(product.product_img, err => {
-    console.log('Xoá file thành công');
-  })
+  const storage = await db.storage.findOne({
+    where: { product_id: product.product_id },
+  });
+  const image = await db.image.findAll({
+    where: { product_id: product.product_id },
+  });
+  for (let i = 0; i < image.length; i++) {
+    fs.unlink(image[i].image_name, (err) => {
+      console.log("Xoá file 1 thành công");
+    });
+    await image[i].destroy();
+  }
+  await storage.destroy();
   await product.destroy();
 }
 

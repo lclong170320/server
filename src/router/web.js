@@ -1,13 +1,15 @@
 import product from "../controllers/product.controller.js";
 import category from "../controllers/category.controller.js";
 import customer from "../controllers/customer.controller.js";
+import order from "../controllers/order.controller.js";
 
 let initWebRouters = (app) => {
   // api routes
-  app.use("/products", product);
+  app.use("/product", product);
   app.use("/categories", category);
-  app.use("/customers", customer);
- 
+  app.use("/customer", customer);
+  app.use("/order", order);
+  
 };
 
 module.exports = initWebRouters;

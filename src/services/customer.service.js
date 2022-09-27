@@ -2,6 +2,7 @@ import { Op } from "sequelize";
 import db from "../models/index";
 
 const fs = require("fs");
+const bcrypt = require('bcrypt');
 
 async function getAll(queries) {
   const start = queries.start ? parseInt(queries.start) : 1;
@@ -19,7 +20,7 @@ async function getAll(queries) {
     },
     include: [ 
       { 
-        model: db.account ,
+        model: db.account,
         attributes: [
             'username',
             'password'
@@ -59,20 +60,22 @@ function customerQuery(queries) {
 
 
 async function create(params) {
-//   // validate;
-//   if (
-//     await db.category.findOne({
-//       where: { category_name: params.category_name },
-//     })
-//   ) {
-//     throw 'Category name "' + params.category_name + '" is Exist';
-//   }
+  // validate;
+  const hasPassword = await bcrypt.hash(params.password, 10);
+  const createAccount = await db.account.create({
+    username: params.username,
+    password: hasPassword,
+  })
+  console.log(createAccount.account_id);
 
-  db.customer.create({ category_name: params.category_name, category_img: params.category_img });
+  await db.customer.create({ 
+    account_id: createAccount.account_id,
+    });
 }
 
 async function update(id, params) {
   const customer = await getCustomer(id);
+  console.log(params.category_img);
   if(params.category_img != ''){
     fs.unlink(category.category_img, err => {
       console.log('Xoá file thành công');
@@ -81,7 +84,7 @@ async function update(id, params) {
   if (customer) {
     await db.customer.update(
       { category_name: params.category_name,
-         category_img: params.category_img
+        category_img: params.category_img
       },
       {
         where: {

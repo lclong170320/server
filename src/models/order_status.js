@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      order_status.hasMany(models.order, { foreignKey: "order_id" });
     }
   }
   order_status.init({
@@ -19,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true
     },
+    order_id: DataTypes.INTEGER,
     status: DataTypes.STRING
   }, {
     sequelize,

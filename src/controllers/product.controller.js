@@ -22,8 +22,8 @@ var upload = multer({ storage: storage });
 // routes
 
 router.get("/", getAll);
-router.post("/", upload.single("product_img"), createSchema, create);
-router.put("/:id", upload.single("product_img"), updateSchema, update);
+router.post("/", upload.array("product_img"), createSchema, create);
+router.put("/:id", upload.array("product_img"), updateSchema, update);
 router.delete("/:id", _delete);
 
 module.exports = router;
@@ -44,44 +44,53 @@ function getAll(req, res, next) {
 }
 
 function create(req, res, next) {
-  const file = req.file;
-  if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png')
-  {
+  const manyFiles = [];
+  for (let i = 0; i < req.files.length; i++) {
+    manyFiles.push(req.files[i].path);
+  }
+  if (
+    req.files[0].mimetype == "image/jpeg" ||
+    req.files[0].mimetype == "image/png"
+  ) {
     const params = req.body;
-    params.product_img = file.path;
     productService
-      .create(params)
+      .create(params, manyFiles)
       .then(() => res.json({ message: "Product created successfully" }))
       .catch(next);
   } else {
-  fs.unlink(file.path, err => {
-    res
-      .status(403)
-      .contentType("text/plain")
-      .end("Không phải là ảnh vui lòng chọn lại");
-  });
+    for (let i = 0; i < req.files.length; i++) {
+      fs.unlink(req.files[i].path, (err) => {});
+    }
+  }
 }
-}
-
 
 function update(req, res, next) {
-  const file = req.file;
-  if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png')
-  {
-    const params = req.body;
-    params.product_img = file.path;
-    productService
-    .update(req.params.id, params)
-    .then(() => res.json({ message: "Product updated successfully" }))
-    .catch(next);
+  const manyFiles = [];
+  if (req.files.length > 0) {
+    for (let i = 0; i < req.files.length; i++) {
+      manyFiles.push(req.files[i].path);
+    }
+    if (
+      req.files[0].mimetype == "image/jpeg" ||
+      req.files[0].mimetype == "image/png"
+    ) {
+      const params = req.body;
+      productService
+        .update(req.params.id, params, manyFiles)
+        .then(() => res.json({ message: "Product updated successfully" }))
+        .catch(next);
+    } else {
+      for (let i = 0; i < req.files.length; i++) {
+        fs.unlink(req.files[i].path, (err) => {});
+      }
+    }
   } else {
-  fs.unlink(file.path, err => {
-    res
-      .status(403)
-      .contentType("text/plain")
-      .end("Không phải là ảnh vui lòng chọn lại");
-  });
-}
+    const params = req.body;
+    productService
+      .update(req.params.id, params, manyFiles)
+      .then(() => res.json({ message: "Category updated successfully" }))
+      .catch(next);
+  }
 }
 
 function _delete(req, res, next) {
@@ -97,24 +106,22 @@ function createSchema(req, res, next) {
   const schema = Joi.object({
     product_name: Joi.string().required(),
     category_id: Joi.string().required(),
-    product_img: Joi.any(),
     product_describe: Joi.string().required(),
-    product_salePrice: Joi.number().required(),
     product_price: Joi.number().required(),
     provider: Joi.string().required(),
-    quantity: Joi.number().required(),
+    product_quantity: Joi.number().required(),
   });
   validateRequest(req, next, schema);
 }
 
 function updateSchema(req, res, next) {
   const schema = Joi.object({
-    product_name: Joi.string().required().empty(""),
-    product_img: Joi.any(),
-    product_describe: Joi.string().required().empty(""),
-    product_salePrice: Joi.number().required().empty(""),
-    product_price: Joi.number().required().empty(""),
-    provider: Joi.string().required().empty(""),
+    product_name: Joi.string().empty(""),
+    category_id: Joi.string().empty(""),
+    product_describe: Joi.string().empty(""),
+    product_price: Joi.number().empty(""),
+    provider: Joi.string().empty(""),
+    product_quantity: Joi.number().empty(""),
   });
   validateRequest(req, next, schema);
 }

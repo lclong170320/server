@@ -17,14 +17,19 @@ module.exports = {
         },
       },
       customer_name: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.STRING
       },
       customer_dob: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DATE
       },
+      customer_phone: {
+        allowNull: true,
+        type: Sequelize.INTEGER
+      },
       customer_avatar: {
+        allowNull: true,
         type: Sequelize.TEXT
       },
       createdAt: {
@@ -35,7 +40,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-    });
+    },
+    {
+      timestamps: "false",
+    }
+    );
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('customers');

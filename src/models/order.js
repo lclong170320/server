@@ -13,6 +13,8 @@ module.exports = (sequelize, DataTypes) => {
       order.belongsTo(models.comment, { foreignKey: "customer_id" });
 
       order.hasMany(models.order_detail, { foreignKey: "order_id" });
+
+      order.belongsTo(models.order_status, { foreignKey: "order_id" });
     }
   }
   order.init(
@@ -24,6 +26,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       order_total: DataTypes.FLOAT,
       order_payment: DataTypes.STRING,
+      customer_id: DataTypes.INTEGER,
+      staff_id: DataTypes.INTEGER,
+
     },
     {
       sequelize,

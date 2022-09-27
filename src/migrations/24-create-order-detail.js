@@ -25,11 +25,21 @@ module.exports = {
         },
       },
       detail_quantity: {
+        allowNull: false,
         type: Sequelize.INTEGER,
       },
       detail_price: {
+        allowNull: false,
         type: Sequelize.FLOAT,
       },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      }
     });
   },
   async down(queryInterface, Sequelize) {
