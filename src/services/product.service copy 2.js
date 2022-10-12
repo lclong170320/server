@@ -6,7 +6,6 @@ const fs = require("fs");
 async function getAll(queries) {
   const start = queries.start ? parseInt(queries.start) : 1;
   const limit = queries.limit ? parseInt(queries.limit) : 10;
-  const orderCheck = queries.orderCheck ? queries.orderCheck : "ASC";
   const offset = start - 1;
   const check = {
     limit: limit,
@@ -41,13 +40,11 @@ async function getAll(queries) {
       },
       {
         model: db.discount,
-        as: "discount",
         attributes: {
-          exclude: ["createdAt", "updatedAt"],
+          exclude: ["discount_id", "createdAt", "updatedAt"],
         },
       },
     ],
-    order: [["product_id", orderCheck]],
     attributes: {
       exclude: ["category_id"],
     },

@@ -34,8 +34,10 @@ function getAll(req, res, next) {
   const queries = {
     product_id: req.query.product_id,
     product_name: req.query.product_name,
+    category_id: req.query.category_id,
     limit: req.query.limit,
     start: req.query.start,
+    orderCheck: req.query.orderCheck,
   };
   productService
     .getAll(queries)
@@ -44,6 +46,7 @@ function getAll(req, res, next) {
 }
 
 function create(req, res, next) {
+  console.log(req.body)
   const manyFiles = [];
   for (let i = 0; i < req.files.length; i++) {
     manyFiles.push(req.files[i].path);

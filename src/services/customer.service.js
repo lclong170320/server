@@ -2,7 +2,7 @@ import { Op } from "sequelize";
 import db from "../models/index";
 
 const fs = require("fs");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 async function getAll(queries) {
   const start = queries.start ? parseInt(queries.start) : 1;
@@ -18,15 +18,12 @@ async function getAll(queries) {
     where: {
       [Op.and]: check.customerWhereCond,
     },
-    include: [ 
-      { 
+    include: [
+      {
         model: db.account,
-        attributes: [
-            'username',
-            'password'
-            ]
-    }
-  ],
+        attributes: ["username", "password"],
+      },
+    ],
     offset: check.offset,
     limit: check.limit,
   });
@@ -42,7 +39,7 @@ function customerQuery(queries) {
   const checkOptions = [];
   if (queries.customer_id) {
     checkOptions.push({
-        customer_name: {
+      customer_name: {
         [Op.eq]: parseInt(queries.customer_id),
       },
     });
@@ -50,7 +47,7 @@ function customerQuery(queries) {
 
   if (queries.customer_name) {
     checkOptions.push({
-        customer_name: {
+      customer_name: {
         [Op.substring]: queries.customer_name,
       },
     });
@@ -58,33 +55,42 @@ function customerQuery(queries) {
   return checkOptions;
 }
 
-
 async function create(params) {
   // validate;
   const hasPassword = await bcrypt.hash(params.password, 10);
   const createAccount = await db.account.create({
     username: params.username,
     password: hasPassword,
-  })
-  console.log(createAccount.account_id);
+  });
 
+  if (params.customer_avatar) {
+    await db.customer.create({
+      account_id: createAccount.account_id,
+      type: params.type,
+      customer_avatar: params.customer_avatar
+
+    });
+  }
+  
   await db.customer.create({ 
     account_id: createAccount.account_id,
+    type: params.type,
     });
 }
 
 async function update(id, params) {
   const customer = await getCustomer(id);
   console.log(params.category_img);
-  if(params.category_img != ''){
-    fs.unlink(category.category_img, err => {
-      console.log('Xoá file thành công');
-    })
+  if (params.category_img != "") {
+    fs.unlink(category.category_img, (err) => {
+      console.log("Xoá file thành công");
+    });
   }
   if (customer) {
     await db.customer.update(
-      { category_name: params.category_name,
-        category_img: params.category_img
+      {
+        category_name: params.category_name,
+        category_img: params.category_img,
       },
       {
         where: {
@@ -97,9 +103,9 @@ async function update(id, params) {
 
 async function _delete(id) {
   const customer = await getCustomer(id);
-  fs.unlink(category.category_img, err => {
-    console.log('Xoá file thành công');
-  })
+  fs.unlink(category.category_img, (err) => {
+    console.log("Xoá file thành công");
+  });
   await customer.destroy();
 }
 

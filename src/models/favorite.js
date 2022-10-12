@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       favorite.belongsTo(models.product, { foreignKey: "product_id" });
+      favorite.belongsTo(models.customer, { foreignKey: "customer_id" });
     }
   }
   favorite.init(
@@ -19,6 +20,8 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
+      product_id: DataTypes.INTEGER,
+      customer_id: DataTypes.INTEGER,
     },
     {
       sequelize,

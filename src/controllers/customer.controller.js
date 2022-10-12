@@ -43,10 +43,9 @@ function getAll(req, res, next) {
 }
 
 function create(req, res, next) {
-  console.log(req.body);
   customerService
     .create(req.body)
-    .then(() => res.json({ message: "User created" }))
+    .then(() => res.json({ message: "Customer created" }))
     .catch(next);
 }
 

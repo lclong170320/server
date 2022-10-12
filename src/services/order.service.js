@@ -59,28 +59,32 @@ function orderQuery(queries) {
 }
 
 async function create(params) {
-
-  const order = await db.order.create({ 
-    customer_id: params.customer_id,
-    staff_id: params.staff_id,
-    order_total: params.order_total,
-    order_payment: params.order_payment,
-  });
-  console.log(order.order_id);
-
-  await db.order_detail.create({
-    order_id: order.order_id,
-    product_id: params.product_id,
-    detail_quantity: params.detail_quantity,
-    detail_price: params.detail_price,
-   });
-
-   await db.order_status.create({
-    status: 'Chưa xác nhận',
-    order_id: order.order_id,
-   });
-
-
+  try {
+    await this.sequelize.transaction(async (t) => {
+      const transaction = { transaction: t };
+      
+      const order = await db.order.create({
+        customer_id: params.customer_id,
+        staff_id: params.staff_id,
+        order_total: params.order_total,
+        order_payment: params.order_payment,
+      });
+      await db.order_detail.create({
+        order_id: order.order_id,
+        product_id: params.product_id,
+        detail_quantity: params.detail_quantity,
+        detail_price: params.detail_price,
+      });
+    
+      await db.order_status.create({
+        status: "Chưa xác nhận",
+        order_id: order.order_id,
+      });
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
 
 async function update(id, params) {

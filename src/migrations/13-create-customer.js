@@ -20,6 +20,14 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
+      customer_gmail: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
+      type: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
       customer_dob: {
         allowNull: true,
         type: Sequelize.DATE
