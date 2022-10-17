@@ -28,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
       order_payment: DataTypes.STRING,
       customer_id: DataTypes.INTEGER,
       staff_id: DataTypes.INTEGER,
-
+      address: DataTypes.STRING,
+      soft_Delete: DataTypes.INTEGER,
     },
     {
       sequelize,

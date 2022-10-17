@@ -21,11 +21,7 @@ async function getAll(queries) {
         model: db.customer,
         as: "customer",
         attributes: {
-          exclude: [
-            "customer_id",
-            "createdAt",
-            "updatedAt",
-          ],
+          exclude: ["customer_id", "createdAt", "updatedAt"],
         },
       },
     ],
@@ -69,39 +65,21 @@ async function create(params) {
   });
 }
 
-async function update(id, params) {
-  const checkDiscount = await getDiscount(id);
-  await db.discount.update(
-    {
-      discount_name: params.discount_name,
-      discount_percent: params.discount_percent,
-      discount_start: params.discount_start,
-      discount_end: params.discount_end,
-    },
-    {
-      where: {
-        discount_id: checkDiscount.discount_id,
-      },
-    }
-  );
-}
-
 async function _delete(id) {
-  const discount = await getDiscount(id);
-  await discount.destroy();
+  const comment = await getComment(id);
+  await comment.destroy();
 }
 
 // helper functions
 
-async function getDiscount(id) {
-  const discount = await db.discount.findByPk(id);
-  if (!discount) throw "Discount not found";
-  return discount;
+async function getComment(id) {
+  const comment = await db.comment.findByPk(id);
+  if (!comment) throw "comment not found";
+  return comment;
 }
 
 module.exports = {
   getAll,
   create,
-  update,
   delete: _delete,
 };

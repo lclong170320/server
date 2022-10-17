@@ -36,9 +36,9 @@ function create(req, res, next) {
 }
 
 function _delete(req, res, next) {
-  categoryService
+  commentService
     .delete(req.params.id)
-    .then(() => res.json({ message: "Category deleted successfully" }))
+    .then(() => res.json({ message: "Comment deleted successfully" }))
     .catch(next);
 }
 

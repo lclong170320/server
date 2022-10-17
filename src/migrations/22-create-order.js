@@ -32,10 +32,20 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
+      address: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
+      soft_Delete: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
       },
+
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,

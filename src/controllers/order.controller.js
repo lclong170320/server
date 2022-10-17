@@ -20,7 +20,8 @@ module.exports = router;
 
 function getAll(req, res, next) {
   const queries = {
-    order_id: req.query.category_id,
+    customer_id: req.query.customer_id,
+    staff_id: req.query.staff_id,
     limit: req.query.limit,
     start: req.query.start,
   };
@@ -31,12 +32,12 @@ function getAll(req, res, next) {
 }
 
 function create(req, res, next) {
-    const params = req.body;
-    orderService
-      .create(params)
-      .then(() => res.json({ message: "Order created successfully" }))
-      .catch(next);
-  }
+  const params = req.body;
+  orderService
+    .create(params)
+    .then(() => res.json({ message: "Order created successfully" }))
+    .catch(next);
+}
 
 function update(req, res, next) {
   const file = req.file;
@@ -78,11 +79,10 @@ function createSchema(req, res, next) {
   const schema = Joi.object({
     customer_id: Joi.number().required(),
     staff_id: Joi.number().empty(""),
+    address: Joi.string().required(),
     order_total: Joi.number().required(),
     order_payment: Joi.string().required(),
-    detail_quantity:  Joi.number().required(),
-    detail_price: Joi.number().required(),
-    product_id:  Joi.number().required(),
+    order_detail: Joi.array().required(),
   });
   validateRequest(req, next, schema);
 }

@@ -17,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
       customer.belongsTo(models.account, { foreignKey: "account_id" });
 
       customer.hasMany(models.favorite, { foreignKey: "customer_id" });
+
+      customer.hasMany(models.address, { foreignKey: "customer_id" });
     }
   }
   customer.init(

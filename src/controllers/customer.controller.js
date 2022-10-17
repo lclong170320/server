@@ -21,10 +21,11 @@ var upload = multer({ storage: storage });
 // routes
 
 router.get("/", getAll);
+router.post("/address", createAddress, createAddressSchema);
 router.post("/", create, createSchema);
 router.put("/:id", upload.single("customer_avatar"), updateSchema, update);
 router.delete("/:id", _delete);
-
+router.delete("/address/:id", deleteAddress);
 module.exports = router;
 
 // route functions
@@ -33,6 +34,7 @@ function getAll(req, res, next) {
   const queries = {
     customer_id: req.query.customer_id,
     customer_name: req.query.customer_name,
+    account_id: req.query.account_id,
     limit: req.query.limit,
     start: req.query.start,
   };
@@ -45,18 +47,27 @@ function getAll(req, res, next) {
 function create(req, res, next) {
   customerService
     .create(req.body)
-    .then(() => res.json({ message: "Customer created" }))
+    .then((customer_id) => res.json(customer_id))
     .catch(next);
 }
+
+function createAddress(req, res, next) {
+  const params = req.body;
+  customerService
+    .createAddress(params)
+    .then(() => res.json({ message: "Update address" }))
+    .catch(next);
+}
+
 
 function update(req, res, next) {
   const file = req.file;
   if (file.mimetype == "image/jpeg" || file.mimetype == "image/png") {
     const params = req.body;
-    params.category_img = file.path;
-    categoryService
+    params.customer_avatar = file.path;
+    customerService
       .update(req.params.id, params)
-      .then(() => res.json({ message: "Category updated successfully" }))
+      .then(() => res.json({ message: "Customer updated successfully" }))
       .catch(next);
   } else {
     fs.unlink(file.path, (err) => {
@@ -69,9 +80,17 @@ function update(req, res, next) {
 }
 
 function _delete(req, res, next) {
-  categoryService
+  customerService
     .delete(req.params.id)
     .then(() => res.json({ message: "Category deleted successfully" }))
+    .catch(next);
+}
+
+function deleteAddress(req, res, next) {
+  console.log(req.params.id)
+  customerService
+    .deleteAddress(req.params.id)
+    .then(() => res.json({ message: "Address deleted successfully" }))
     .catch(next);
 }
 
@@ -85,10 +104,23 @@ function createSchema(req, res, next) {
   validateRequest(req, next, schema);
 }
 
+
+function createAddressSchema(req, res, next) {
+  const schema = Joi.object({
+    customer_id: Joi.string().required(),
+    address: Joi.string().required(),
+  });
+  validateRequest(req, next, schema);
+}
+
+
 function updateSchema(req, res, next) {
   const schema = Joi.object({
-    category_name: Joi.string().required().empty(""),
-    category_img: Joi.any(),
+    customer_name: Joi.string().required(),
+    customer_gmail: Joi.string().required(),
+    customer_dob: Joi.date().required(),
+    customer_phone: Joi.string().required(),
+    customer_avatar: Joi.any(),
   });
   validateRequest(req, next, schema);
 }

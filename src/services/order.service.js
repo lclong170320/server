@@ -1,5 +1,6 @@
 import { Op } from "sequelize";
 import db from "../models/index";
+import sequelize from "sequelize";
 
 const fs = require("fs");
 
@@ -20,11 +21,24 @@ async function getAll(queries) {
     include: [
       {
         model: db.order_detail,
-        attributes: ["detail_quantity", "detail_price"],
+        attributes: ["product_id", "detail_quantity", "detail_price"],
+        include: [
+          {
+            model: db.product,
+            attributes: ["product_name"],
+            include: [
+              {
+                model: db.image,
+                as: "images",
+                attributes: ["image_name"],
+              },
+            ],
+          },
+        ],
       },
       {
         model: db.order_status,
-        attributes: ["status"],
+        attributes: ["status", "updatedAt"],
       },
     ],
     offset: check.offset,
@@ -40,10 +54,17 @@ async function getAll(queries) {
 
 function orderQuery(queries) {
   const checkOptions = [];
-  if (queries.order_id) {
+  if (queries.customer_id) {
     checkOptions.push({
-      order_id: {
-        [Op.eq]: parseInt(queries.order_id),
+      customer_id: {
+        [Op.eq]: parseInt(queries.customer_id),
+      },
+    });
+  }
+  if (queries.staff_id) {
+    checkOptions.push({
+      staff_id: {
+        [Op.eq]: parseInt(queries.staff_id),
       },
     });
   }
@@ -59,31 +80,37 @@ function orderQuery(queries) {
 }
 
 async function create(params) {
+  const t = await db.sequelize.transaction();
   try {
-    await this.sequelize.transaction(async (t) => {
-      const transaction = { transaction: t };
-      
-      const order = await db.order.create({
+    const transaction = { transaction: t };
+    const order = await db.order.create(
+      {
         customer_id: params.customer_id,
         staff_id: params.staff_id,
+        address: params.address,
         order_total: params.order_total,
         order_payment: params.order_payment,
-      });
-      await db.order_detail.create({
-        order_id: order.order_id,
-        product_id: params.product_id,
-        detail_quantity: params.detail_quantity,
-        detail_price: params.detail_price,
-      });
-    
-      await db.order_status.create({
+      },
+      transaction
+    );
+
+    const newDetail = params.order_detail.map((obj) => {
+      return { ...obj, order_id: order.order_id };
+    });
+    await db.order_detail.bulkCreate(newDetail, transaction);
+
+    await db.order_status.create(
+      {
         status: "Chưa xác nhận",
         order_id: order.order_id,
-      });
-    });
+      },
+      transaction
+    );
+    await t.commit();
     return true;
   } catch (error) {
-    return false;
+    await t.rollback();
+    throw "Create order failed";
   }
 }
 
