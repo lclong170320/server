@@ -24,6 +24,7 @@ router.get("/", getAll);
 router.post("/address", createAddress, createAddressSchema);
 router.post("/", create, createSchema);
 router.put("/:id", upload.single("customer_avatar"), updateSchema, update);
+router.put("/account/:id", updateAccountSchema, updateAccount);
 router.delete("/:id", _delete);
 router.delete("/address/:id", deleteAddress);
 module.exports = router;
@@ -59,24 +60,39 @@ function createAddress(req, res, next) {
     .catch(next);
 }
 
-
 function update(req, res, next) {
   const file = req.file;
-  if (file.mimetype == "image/jpeg" || file.mimetype == "image/png") {
+  if (file) {
+    if (file.mimetype == "image/jpeg" || file.mimetype == "image/png") {
+      const params = req.body;
+      params.customer_avatar = file.path;
+      customerService
+        .update(req.params.id, params)
+        .then(() => res.json({ message: "Customer updated successfully" }))
+        .catch(next);
+    } else {
+      fs.unlink(file.path, (err) => {
+        res
+          .status(403)
+          .contentType("text/plain")
+          .end("Không phải là ảnh vui lòng chọn lại");
+      });
+    }
+  } else {
     const params = req.body;
-    params.customer_avatar = file.path;
     customerService
       .update(req.params.id, params)
       .then(() => res.json({ message: "Customer updated successfully" }))
       .catch(next);
-  } else {
-    fs.unlink(file.path, (err) => {
-      res
-        .status(403)
-        .contentType("text/plain")
-        .end("Không phải là ảnh vui lòng chọn lại");
-    });
   }
+}
+
+function updateAccount(req, res, next) {
+  const params = req.body;
+  customerService
+    .updateAccount(req.params.id, params)
+    .then(() => res.json({ message: "Customer updated successfully" }))
+    .catch(next);
 }
 
 function _delete(req, res, next) {
@@ -87,7 +103,7 @@ function _delete(req, res, next) {
 }
 
 function deleteAddress(req, res, next) {
-  console.log(req.params.id)
+  console.log(req.params.id);
   customerService
     .deleteAddress(req.params.id)
     .then(() => res.json({ message: "Address deleted successfully" }))
@@ -104,7 +120,6 @@ function createSchema(req, res, next) {
   validateRequest(req, next, schema);
 }
 
-
 function createAddressSchema(req, res, next) {
   const schema = Joi.object({
     customer_id: Joi.string().required(),
@@ -113,7 +128,6 @@ function createAddressSchema(req, res, next) {
   validateRequest(req, next, schema);
 }
 
-
 function updateSchema(req, res, next) {
   const schema = Joi.object({
     customer_name: Joi.string().required(),
@@ -121,6 +135,13 @@ function updateSchema(req, res, next) {
     customer_dob: Joi.date().required(),
     customer_phone: Joi.string().required(),
     customer_avatar: Joi.any(),
+  });
+  validateRequest(req, next, schema);
+}
+
+function updateAccountSchema(req, res, next) {
+  const schema = Joi.object({
+    password: Joi.string().required(),
   });
   validateRequest(req, next, schema);
 }

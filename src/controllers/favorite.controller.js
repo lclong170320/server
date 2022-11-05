@@ -17,7 +17,7 @@ module.exports = router;
 
 function getAll(req, res, next) {
   const queries = {
-    customer_id: req.query.staff_id,
+    customer_id: req.query.customer_id,
     product_id: req.query.product_id,
     limit: req.query.limit,
     start: req.query.start,
@@ -36,9 +36,9 @@ function create(req, res, next) {
 }
 
 function _delete(req, res, next) {
-  categoryService
+  favoriteService
     .delete(req.params.id)
-    .then(() => res.json({ message: "Category deleted successfully" }))
+    .then(() => res.json({ message: "Favorite deleted successfully" }))
     .catch(next);
 }
 

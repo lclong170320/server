@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       customer_id: DataTypes.INTEGER,
       product_id: DataTypes.INTEGER,
       comment_content: DataTypes.STRING,
+      comment_star:DataTypes.INTEGER,
     },
     {
       sequelize,

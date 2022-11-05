@@ -51,6 +51,7 @@ async function getAll(queries) {
     attributes: {
       exclude: ["category_id"],
     },
+    distinct: true,
     offset: check.offset,
     limit: check.limit,
   });

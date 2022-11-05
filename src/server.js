@@ -4,20 +4,23 @@ import bodyParser from "body-parser";
 import viewEngine from "./config/viewEngine";
 import initWebRouters from "./router/web";
 import conNectDB from "./config/connectDB";
+var cookieParser = require("cookie-parser");
+var logger = require("morgan");
 
 require("dotenv").config();
 
 const app = express();
-
+app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.use(cookieParser());
+const path = require("path");
 
 viewEngine(app);
 initWebRouters(app);
 
 conNectDB();
-
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });

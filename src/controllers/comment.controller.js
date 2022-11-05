@@ -48,6 +48,7 @@ function createSchema(req, res, next) {
     product_id: Joi.number().required(),
     customer_id: Joi.number().required(),
     comment_content: Joi.string().required(),
+    comment_star: Joi.number().required(),
   });
   validateRequest(req, next, schema);
 }

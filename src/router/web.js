@@ -5,6 +5,7 @@ import order from "../controllers/order.controller.js";
 import favorite from "../controllers/favorite.controller.js";
 import discount from "../controllers/discount.controller.js";
 import comment from "../controllers/comment.controller.js";
+import staff from "../controllers/staff.controller.js";
 let initWebRouters = (app) => {
   // api routes
   app.use("/product", product);
@@ -14,6 +15,7 @@ let initWebRouters = (app) => {
   app.use("/favorite", favorite);
   app.use("/discount", discount);
   app.use("/comment", comment);
+  app.use("/staff", staff);
 };
 
 module.exports = initWebRouters;

@@ -57,16 +57,8 @@ function favoriteQuery(queries) {
 }
 
 async function create(params) {
-  if (
-    (await db.favorite.findOne({
-      where: { customer_id: params.customer_id },
-    })) &&
-    (await db.favorite.findOne({
-      where: { product_id: params.product_id },
-    }))
-  ) {
-    throw "Customer is Exist";
-  }
+  const check = await getCheck(params.customer_id, params.product_id);
+
   await db.favorite.create({
     product_id: params.product_id,
     customer_id: params.customer_id,
@@ -74,29 +66,24 @@ async function create(params) {
 }
 
 async function _delete(id) {
-  const product = await getProduct(id);
-  const storage = await db.storage.findOne({
-    where: { product_id: product.product_id },
-  });
-  const image = await db.image.findAll({
-    where: { product_id: product.product_id },
-  });
-  for (let i = 0; i < image.length; i++) {
-    fs.unlink(image[i].image_name, (err) => {
-      console.log("Xoá file 1 thành công");
-    });
-    await image[i].destroy();
-  }
-  await storage.destroy();
-  await product.destroy();
+  const favorite = await getFavorite(id);
+  await favorite.destroy();
 }
 
 // helper functions
 
-async function getProduct(id) {
-  const product = await db.product.findByPk(id);
-  if (!product) throw "Product not found";
-  return product;
+async function getFavorite(id) {
+  const favorite = await db.favorite.findByPk(id);
+  if (!favorite) throw "Favorite not found";
+  return favorite;
+}
+
+async function getCheck(customer_id, product_id) {
+  const check = await db.favorite.findOne({
+    where: { customer_id: customer_id, product_id: product_id },
+  });
+  if (check) throw "Customer and product found";
+  return check;
 }
 
 module.exports = {

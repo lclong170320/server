@@ -10,7 +10,7 @@ module.exports = {
       },
       customer_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "customers",
           key: "customer_id",
@@ -40,6 +40,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.BOOLEAN,
         defaultValue: 0,
+      },
+      order_note: {
+        allowNull: false,
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,

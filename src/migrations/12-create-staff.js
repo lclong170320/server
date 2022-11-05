@@ -25,9 +25,23 @@ module.exports = {
         type: Sequelize.DATE
       },
       staff_address: {
+        allowNull: false,
         type: Sequelize.TEXT
       },
       staff_avatar: {
+        allowNull: false,
+        type: Sequelize.TEXT
+      },
+      staff_type: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN
+      },
+      staff_gmail: {
+        allowNull: false,
+        type: Sequelize.TEXT
+      },
+      staff_phone: {
+        allowNull: false,
         type: Sequelize.TEXT
       },
       createdAt: {

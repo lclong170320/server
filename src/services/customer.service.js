@@ -28,6 +28,7 @@ async function getAll(queries) {
         attributes: ["address_id", "address", "createdAt", "updatedAt"],
       },
     ],
+    distinct: true,
     offset: check.offset,
     limit: check.limit,
   });
@@ -105,24 +106,58 @@ async function createAddress(params) {
 
 async function update(id, params) {
   const customer = await getCustomer(id);
-  if (!customer) {
-    fs.unlink(params.customer_avatar, (err) => {
-      console.log("Xoá file thành công");
-    });
-    throw "Customer is Exist";
-  }
-  if (customer) {
-    await db.customer.update(
+  if (
+    (params.customer_avatar === undefined && customer) ||
+    (params.customer_avatar === "" && customer)
+  ) {
+    return await db.customer.update(
       {
         customer_name: params.customer_name,
         customer_gmail: params.customer_gmail,
         customer_dob: params.customer_dob,
         customer_phone: params.customer_phone,
-        customer_avatar: params.customer_avatar
       },
       {
         where: {
           customer_id: id,
+        },
+      }
+    );
+  }
+  if (customer && params.customer_avatar !== undefined) {
+    if (customer.category_img) {
+      fs.unlink(customer.category_img, (err) => {
+        console.log("Xoá file 1 thành công");
+      });
+    }
+    return await db.customer.update(
+      {
+        customer_name: params.customer_name,
+        customer_gmail: params.customer_gmail,
+        customer_dob: params.customer_dob,
+        customer_phone: params.customer_phone,
+        customer_avatar: params.customer_avatar,
+      },
+      {
+        where: {
+          customer_id: id,
+        },
+      }
+    );
+  }
+}
+
+async function updateAccount(id, params) {
+  const customer = await getCustomer(id);
+  if (customer) {
+    const hasPassword = await bcrypt.hash(params.password, 10);
+    await db.account.update(
+      {
+        password: hasPassword,
+      },
+      {
+        where: {
+          account_id: customer.account_id,
         },
       }
     );
@@ -167,4 +202,5 @@ module.exports = {
   update,
   delete: _delete,
   deleteAddress,
+  updateAccount,
 };

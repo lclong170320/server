@@ -1,0 +1,106 @@
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <style>
+        body{
+            font-size: 24px;
+            font-family: 'Garamond Premier Pro';
+            color: #121212;
+        }
+        .infomation{
+            width: 100%;
+            height: 20px;
+            padding: 8px 0;
+            margin: 8px 0;
+        }
+        .infomation__detail{
+        }
+        .infomation__detail-text{
+            display: inline-block;
+            min-width: 190px;
+            font-weight: 600;
+        }
+        .total{
+            font-size: 30px;
+            margin-left: 2px;
+        }
+        .total__number{
+            display: inline-block;
+            min-width: 400px;
+            font-weight: 600;
+        }
+        li{
+            list-style: list-none;
+        }
+        table{
+            width: 50%;
+            margin: 24px 0 24px;
+        }
+        table thead tr th{
+            border-bottom: 2px solid #000000;
+        }
+        table thead tr, table tbody tr{
+            text-align: left;
+        }
+
+    </style>
+</head>
+ 
+<body>
+    <div>
+         <div class="infomation">
+            <div class="infomation__detail">
+                <span class="infomation__detail-text">Mã đơn hàng: </span>
+                {{order_id}}
+            </div>
+        </div>
+        <div class="infomation">
+            <div class="infomation__detail">
+                <span class="infomation__detail-text">SĐT: </span>
+                {{order_phone}}
+            </div>
+        </div>
+         <div class="infomation">
+            <div class="infomation__detail">
+                <span class="infomation__detail-text">Hình thức thanh toán: </span>
+                {{order_payment}}
+            </div>
+        </div>
+         <div class="infomation">
+            <div class="infomation__detail">
+                <span class="infomation__detail-text">Note: </span>
+                {{order_note}}
+            </div>
+        </div>
+        <div class="infomation">
+            <div class="infomation__detail">
+                <span class="infomation__detail-text">Địa chỉ: </span>
+                {{order_address}}
+            </div>
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Đơn giá</th>
+                <th>Số lượng</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            {{#each order_detail}}
+            <tr>
+                <td>{{product_name}}</td>
+                <td>{{quantity}}</td>
+                <td>{{order_price}}</td>
+            </tr>
+            {{/each }}
+        </tbody>
+    </table>
+    <div class="total">
+        <span class="total__number">Tổng tiền: </span>{{order_total}}
+    </div>
+</body>
+</html>

@@ -25,6 +25,7 @@ async function getAll(queries) {
         },
       },
     ],
+    distinct: true,
     offset: check.offset,
     limit: check.limit,
   });
@@ -62,6 +63,7 @@ async function create(params) {
     product_id: params.product_id,
     customer_id: params.customer_id,
     comment_content: params.comment_content,
+    comment_star: params.comment_star,
   });
 }
 

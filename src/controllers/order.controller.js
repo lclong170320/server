@@ -12,7 +12,9 @@ import orderService from "../services/order.service.js";
 router.get("/", getAll);
 router.post("/", createSchema, create);
 router.put("/:id", updateSchema, update);
+router.put("/status/:id", updateStatusOrderSchema, updateStatusOrder);
 router.delete("/:id", _delete);
+router.post("/create_payment_url", createPayment);
 
 module.exports = router;
 
@@ -22,6 +24,10 @@ function getAll(req, res, next) {
   const queries = {
     customer_id: req.query.customer_id,
     staff_id: req.query.staff_id,
+    order_id: req.query.order_id,
+    order_status: req.query.order_status,
+    order_total: req.query.order_total,
+    soft_Delete: req.query.soft_Delete,
     limit: req.query.limit,
     start: req.query.start,
   };
@@ -31,11 +37,18 @@ function getAll(req, res, next) {
     .catch(next);
 }
 
-function create(req, res, next) {
+async function create(req, res, next) {
   const params = req.body;
-  orderService
-    .create(params)
+  await orderService
+    .create(params, req)
     .then(() => res.json({ message: "Order created successfully" }))
+    .catch(next);
+}
+
+function createPayment(req, res, next) {
+  orderService
+    .createPayment(req, res, next)
+    .then((url) => res.json({ url }))
     .catch(next);
 }
 
@@ -66,6 +79,14 @@ function update(req, res, next) {
   }
 }
 
+function updateStatusOrder(req, res, next) {
+  const params = req.body;
+  orderService
+    .updateStatusOrder(req.params.id, params)
+    .then(() => res.json({ message: "Order status updated successfully" }))
+    .catch(next);
+}
+
 function _delete(req, res, next) {
   categoryService
     .delete(req.params.id)
@@ -77,10 +98,11 @@ function _delete(req, res, next) {
 
 function createSchema(req, res, next) {
   const schema = Joi.object({
-    customer_id: Joi.number().required(),
+    customer_id: Joi.number().empty(""),
     staff_id: Joi.number().empty(""),
     address: Joi.string().required(),
     order_total: Joi.number().required(),
+    order_note: Joi.string().empty(""),
     order_payment: Joi.string().required(),
     order_detail: Joi.array().required(),
   });
@@ -91,6 +113,13 @@ function updateSchema(req, res, next) {
   const schema = Joi.object({
     category_name: Joi.string().empty(""),
     category_img: Joi.any(),
+  });
+  validateRequest(req, next, schema);
+}
+
+function updateStatusOrderSchema(req, res, next) {
+  const schema = Joi.object({
+    status: Joi.string().required(),
   });
   validateRequest(req, next, schema);
 }
