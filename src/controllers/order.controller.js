@@ -10,6 +10,7 @@ import orderService from "../services/order.service.js";
 // routes
 
 router.get("/", getAll);
+router.get("/statistical", getAllStatistical);
 router.post("/", createSchema, create);
 router.put("/:id", updateSchema, update);
 router.put("/status/:id", updateStatusOrderSchema, updateStatusOrder);
@@ -28,11 +29,22 @@ function getAll(req, res, next) {
     order_status: req.query.order_status,
     order_total: req.query.order_total,
     soft_Delete: req.query.soft_Delete,
+    created_at: req.query.created_at,
     limit: req.query.limit,
     start: req.query.start,
   };
   orderService
     .getAll(queries)
+    .then((order) => res.json(order))
+    .catch(next);
+}
+
+function getAllStatistical(req, res, next) {
+  const queries = {
+    year: req.query.year,
+  };
+  orderService
+    .getAllStatistical(queries)
     .then((order) => res.json(order))
     .catch(next);
 }

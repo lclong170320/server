@@ -38,13 +38,13 @@ async function getAll(queries) {
 
 function staffQuery(queries) {
   const checkOptions = [];
-  // if (queries.customer_id) {
-  //   checkOptions.push({
-  //     customer_id: {
-  //       [Op.eq]: parseInt(queries.customer_id),
-  //     },
-  //   });
-  // }
+  if (queries.staff_id) {
+    checkOptions.push({
+      staff_id: {
+        [Op.eq]: parseInt(queries.staff_id),
+      },
+    });
+  }
 
   if (queries.staff_name) {
     checkOptions.push({
@@ -86,11 +86,11 @@ async function create(params) {
   return customer;
 }
 
-async function updatePasswordAdmin(staff_id) {
+async function updatePasswordAdmin(staff_id, body) {
   // validate;
   const staff = await getStaff(staff_id);
 
-  const hasPassword = await bcrypt.hash("1", 10);
+  const hasPassword = await bcrypt.hash(body.password, 10);
   const updatePassWord = await db.account.update(
     {
       password: hasPassword,
@@ -106,11 +106,13 @@ async function updatePasswordAdmin(staff_id) {
 
 async function update(id, params) {
   const staff = await getStaff(id);
-  const account = await db.account.findOne({
-    where: { username: params.username },
-  });
-  if (account) {
-    throw "Username is Exist";
+  if (params.username) {
+    const account = await db.account.findOne({
+      where: { username: params.username },
+    });
+    if (account) {
+      throw "Username is Exist";
+    }
   }
   if (!staff) {
     fs.unlink(params.staff_avatar, (err) => {

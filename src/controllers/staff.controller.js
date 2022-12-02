@@ -34,6 +34,7 @@ function getAll(req, res, next) {
     limit: req.query.limit,
     start: req.query.start,
     staff_name: req.query.staff_name,
+    staff_id: req.query.staff_id,
   };
   staffService
     .getAll(queries)
@@ -89,8 +90,8 @@ function update(req, res, next) {
 
 function updatePasswordAdmin(req, res, next) {
   staffService
-    .updatePasswordAdmin(req.params.id)
-    .then(() => res.json({ message: "Customer updated successfully" }))
+    .updatePasswordAdmin(req.params.id, req.body)
+    .then(() => res.json({ message: "Staff updated successfully" }))
     .catch(next);
 }
 
@@ -128,7 +129,6 @@ function createSchema(req, res, next) {
 
 function updateSchema(req, res, next) {
   const schema = Joi.object({
-    username: Joi.string().required(),
     staff_name: Joi.string().required(),
     staff_phone: Joi.number().required(),
     staff_gmail: Joi.string().required(),

@@ -94,6 +94,15 @@ function orderQuery(queries) {
     });
   }
 
+  if (queries.created_at) {
+    checkOptions.push({
+      createdAt: {
+        [Op.lte]: new Date(),
+        [Op.gte]: new Date(new Date() - 24 * 60 * 60 * 1000),
+      },
+    });
+  }
+
   if (queries.order_total) {
     let check = [];
     if (queries.order_total === "1") {
@@ -115,6 +124,33 @@ function orderQuery(queries) {
     });
   }
   return checkOptions;
+}
+
+async function getAllStatistical(queries) {
+  let ordersStatistical;
+  ordersStatistical = await db.sequelize.query(
+    `SELECT (MONTH(createdAt)) AS month, SUM(order_total) AS Total FROM orders GROUP BY month
+ORDER BY month ASC`,
+    {
+      model: db.order,
+      mapToModel: true, // pass true here if you have any mapped fields
+    }
+  );
+
+  if (queries.year !== undefined) {
+    ordersStatistical = await db.sequelize.query(
+      `SELECT (MONTH(createdAt)) AS month, SUM(order_total) AS Total FROM orders WHERE (YEAR(createdAt) = ${queries.year}) GROUP BY month
+  ORDER BY month ASC`,
+      {
+        model: db.order,
+        mapToModel: true, // pass true here if you have any mapped fields
+      }
+    );
+  }
+
+  return {
+    statistical: ordersStatistical,
+  };
 }
 
 async function create(params, req) {
@@ -173,7 +209,7 @@ async function create(params, req) {
 async function sendMail(orderSend, total) {
   const customer = await getCustomer(orderSend.customer_id);
   const gmail = customer.customer_gmail;
-  console.log(gmail)
+  console.log(gmail);
   const infoCus = {
     id: orderSend.order_id,
     add: orderSend.address,
@@ -362,6 +398,7 @@ async function getCustomer(id) {
 
 module.exports = {
   getAll,
+  getAllStatistical,
   create,
   sendMail,
   createPayment,
