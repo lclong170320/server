@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "comment",
+      paranoid: true,
     }
   );
   return comment;

@@ -29,6 +29,7 @@ function getAll(req, res, next) {
     order_status: req.query.order_status,
     order_total: req.query.order_total,
     soft_Delete: req.query.soft_Delete,
+    order_payment: req.query.order_payment,
     created_at: req.query.created_at,
     limit: req.query.limit,
     start: req.query.start,

@@ -9,7 +9,7 @@ import staff from "../controllers/staff.controller.js";
 let initWebRouters = (app) => {
   // api routes
   app.use("/product", product);
-  app.use("/categories", category);
+  app.use("/category", category);
   app.use("/customer", customer);
   app.use("/order", order);
   app.use("/favorite", favorite);

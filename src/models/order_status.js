@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'order_status',
+    paranoid: true,
   });
   return order_status;
 };

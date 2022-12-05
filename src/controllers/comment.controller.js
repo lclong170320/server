@@ -19,6 +19,8 @@ function getAll(req, res, next) {
   const queries = {
     customer_id: req.query.customer_id,
     product_id: req.query.product_id,
+    comment_content: req.query.comment_content,
+    customer_name: req.query.customer_name,
     limit: req.query.limit,
     start: req.query.start,
   };

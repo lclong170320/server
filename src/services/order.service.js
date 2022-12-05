@@ -63,6 +63,14 @@ async function getAll(queries) {
 
 function orderQuery(queries) {
   const checkOptions = [];
+  if (queries.order_payment) {
+    checkOptions.push({
+      order_payment: {
+        [Op.substring]: queries.order_payment,
+      },
+    });
+  }
+  
   if (queries.customer_id) {
     checkOptions.push({
       customer_id: {

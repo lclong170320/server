@@ -6,6 +6,11 @@ async function getAll(queries) {
   const limit = queries.limit ? parseInt(queries.limit) : 10;
   const offset = start - 1;
 
+  let checkCustomer = {};
+  if (queries.customer_name) {
+    checkCustomer = { customer_name: `${queries.customer_name}` };
+  }
+
   const check = {
     limit: limit,
     offset: offset,
@@ -23,6 +28,7 @@ async function getAll(queries) {
         attributes: {
           exclude: ["customer_id", "createdAt", "updatedAt"],
         },
+        where: checkCustomer,
       },
     ],
     distinct: true,
@@ -51,6 +57,14 @@ function commentQuery(queries) {
     checkOptions.push({
       product_id: {
         [Op.eq]: parseInt(queries.product_id),
+      },
+    });
+  }
+
+  if (queries.comment_content) {
+    checkOptions.push({
+      comment_content: {
+        [Op.substring]: queries.comment_content,
       },
     });
   }

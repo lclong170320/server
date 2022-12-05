@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "favorite",
+      paranoid: true,
     }
   );
   return favorite;

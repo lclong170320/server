@@ -35,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "order",
+      paranoid: true,
     }
   );
   return order;
