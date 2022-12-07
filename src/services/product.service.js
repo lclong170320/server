@@ -84,6 +84,7 @@ function productQuery(queries) {
       category_id: queries.category_id,
     });
   }
+
   return checkOptions;
 }
 
@@ -219,9 +220,6 @@ async function _delete(id) {
     where: { product_id: product.product_id },
   });
   for (let i = 0; i < image.length; i++) {
-    fs.unlink(image[i].image_name, (err) => {
-      console.log("Xoá file 1 thành công");
-    });
     await image[i].destroy();
   }
   await storage.destroy();

@@ -10,10 +10,6 @@ async function getAll(queries) {
   const start = queries.start ? parseInt(queries.start) : 1;
   const limit = queries.limit ? parseInt(queries.limit) : 10;
   const offset = start - 1;
-  let checkStatus = {};
-  if (queries.order_status) {
-    checkStatus = { status: `${queries.order_status}` };
-  }
 
   const check = {
     limit: limit,
@@ -45,7 +41,6 @@ async function getAll(queries) {
       {
         model: db.order_status,
         attributes: ["status", "createdAt", "updatedAt"],
-        where: checkStatus,
       },
     ],
     distinct: true,
@@ -70,7 +65,7 @@ function orderQuery(queries) {
       },
     });
   }
-  
+
   if (queries.customer_id) {
     checkOptions.push({
       customer_id: {
@@ -177,7 +172,7 @@ async function create(params, req) {
         customer_id: params.customer_id,
         staff_id: params.staff_id,
         address: params.address,
-        order_total: params.order_total,
+        order_total: total,
         order_note: params.order_note,
         order_payment: params.order_payment,
       },
@@ -188,6 +183,18 @@ async function create(params, req) {
       return { ...obj, order_id: order.order_id };
     });
     await db.order_detail.bulkCreate(newDetail, transaction);
+
+    params.order_detail.map(async (obj) => {
+      return await db.storage.update(
+        { product_sold: obj.detail_quantity },
+        {
+          where: {
+            product_id: obj.product_id,
+          },
+        },
+        transaction
+      );
+    });
 
     await db.order_status.create(
       {
@@ -208,7 +215,6 @@ async function create(params, req) {
     await t.commit();
     return true;
   } catch (error) {
-    console.log(error);
     await t.rollback();
     throw "Create order failed";
   }
@@ -217,7 +223,6 @@ async function create(params, req) {
 async function sendMail(orderSend, total) {
   const customer = await getCustomer(orderSend.customer_id);
   const gmail = customer.customer_gmail;
-  console.log(gmail);
   const infoCus = {
     id: orderSend.order_id,
     add: orderSend.address,
@@ -276,7 +281,6 @@ async function sendMail(orderSend, total) {
 
   mailTransporter.sendMail(mailDetails, function (err, data) {
     if (err) {
-      console.log(err);
       console.log("Error Occurs");
     } else {
       console.log("Email sent successfully");

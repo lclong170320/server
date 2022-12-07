@@ -107,9 +107,6 @@ async function update(id, params) {
 
 async function _delete(id) {
   const category = await getCategory(id);
-  fs.unlink(category.category_img, err => {
-    console.log('Xoá file thành công');
-  })
   await category.destroy();
 }
 

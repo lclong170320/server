@@ -187,9 +187,6 @@ async function update(id, params) {
 
 async function _delete(id) {
   const staff = await getStaff(id);
-  fs.unlink(staff.staff_avatar, (err) => {
-    console.log("Xoá file thành công");
-  });
   await staff.destroy();
 }
 

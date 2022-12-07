@@ -166,9 +166,6 @@ async function updateAccount(id, params) {
 
 async function _delete(id) {
   const customer = await getCustomer(id);
-  fs.unlink(category.category_img, (err) => {
-    console.log("Xoá file thành công");
-  });
   await customer.destroy();
 }
 

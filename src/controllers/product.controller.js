@@ -46,7 +46,6 @@ function getAll(req, res, next) {
 }
 
 function create(req, res, next) {
-  console.log(req.body)
   const manyFiles = [];
   for (let i = 0; i < req.files.length; i++) {
     manyFiles.push(req.files[i].path);
