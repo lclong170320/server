@@ -3,7 +3,8 @@ import db from "../models/index";
 const hbs = require("nodemailer-express-handlebars");
 const nodemailer = require("nodemailer");
 const path = require("path");
-
+import * as dotenv from "dotenv";
+dotenv.config();
 const fs = require("fs");
 
 async function getAll(queries) {
@@ -246,11 +247,10 @@ async function sendMail(orderSend, total) {
   let mailTransporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "lclong1703@gmail.com",
-      pass: "mmqrpxgivbixbwyk",
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
     },
   });
-
   const handlebarOptions = {
     viewEngine: {
       extName: ".hbs",
@@ -324,8 +324,8 @@ async function createPayment(req, res, net) {
     req.socket.remoteAddress ||
     req.connection.socket.remoteAddress;
   var dateFormat = require("dateformat");
-  var tmnCode = "20K52K8G";
-  var secretKey = "EJSNKRIBFDMAFTXULXBHTVJKRJCLLJCW";
+  var tmnCode = "N6GB23DC";
+  var secretKey = "HGJWBVLHRSOTKCXSLBBSKDLLGXDKAEKI";
   var vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
   var returnUrl = "https://localhost:5001/cart/payment";
 
