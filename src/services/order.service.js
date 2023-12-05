@@ -214,7 +214,6 @@ async function create(params, req) {
       );
     }
     await t.commit();
-    console.log(params);
     return true;
   } catch (error) {
     await t.rollback();
@@ -248,11 +247,10 @@ async function sendMail(orderSend, total) {
   let mailTransporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.email,
-      pass: process.env.password,
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
     },
   });
-
   const handlebarOptions = {
     viewEngine: {
       extName: ".hbs",
