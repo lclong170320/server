@@ -74,8 +74,7 @@ function update(req, res, next) {
     }
     if (
       req.files[0].mimetype == "image/jpeg" ||
-      req.files[0].mimetype == "image/png" ||
-      "image/webp"
+      req.files[0].mimetype == "image/png"
     ) {
       const params = req.body;
       productService

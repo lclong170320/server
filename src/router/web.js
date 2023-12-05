@@ -8,14 +8,14 @@ import comment from "../controllers/comment.controller.js";
 import staff from "../controllers/staff.controller.js";
 let initWebRouters = (app) => {
   // api routes
-  app.use("/products", product);
-  app.use("/categories", category);
-  app.use("/customers", customer);
-  app.use("/orders", order);
-  app.use("/favorites", favorite);
-  app.use("/discounts", discount);
-  app.use("/comments", comment);
-  app.use("/staffs", staff);
+  app.use("/product", product);
+  app.use("/category", category);
+  app.use("/customer", customer);
+  app.use("/order", order);
+  app.use("/favorite", favorite);
+  app.use("/discount", discount);
+  app.use("/comment", comment);
+  app.use("/staff", staff);
 };
 
 module.exports = initWebRouters;
