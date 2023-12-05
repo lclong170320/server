@@ -3,7 +3,8 @@ import db from "../models/index";
 const hbs = require("nodemailer-express-handlebars");
 const nodemailer = require("nodemailer");
 const path = require("path");
-
+import * as dotenv from "dotenv";
+dotenv.config();
 const fs = require("fs");
 
 async function getAll(queries) {
@@ -242,7 +243,7 @@ async function sendMail(orderSend, total) {
       };
     })
   );
-  // send gamil
+  // send gmail
   let mailTransporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -263,7 +264,7 @@ async function sendMail(orderSend, total) {
   mailTransporter.use("compile", hbs(handlebarOptions));
 
   let mailDetails = {
-    from: "nhuttramtv.vn@gmail.com",
+    from: "lclong1703@gmail.com",
     to: gmail,
     subject: "Đơn hàng Sieu Thi Mini",
     template: "email",
@@ -323,8 +324,8 @@ async function createPayment(req, res, net) {
     req.socket.remoteAddress ||
     req.connection.socket.remoteAddress;
   var dateFormat = require("dateformat");
-  var tmnCode = "20K52K8G";
-  var secretKey = "EJSNKRIBFDMAFTXULXBHTVJKRJCLLJCW";
+  var tmnCode = "N6GB23DC";
+  var secretKey = "HGJWBVLHRSOTKCXSLBBSKDLLGXDKAEKI";
   var vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
   var returnUrl = "https://localhost:5001/cart/payment";
 

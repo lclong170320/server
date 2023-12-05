@@ -48,7 +48,6 @@ function categoryQuery(queries) {
   return checkOptions;
 }
 
-
 async function create(params) {
   // validate;
   if (
@@ -59,28 +58,31 @@ async function create(params) {
     throw 'Category name "' + params.category_name + '" is Exist';
   }
 
-  db.category.create({ category_name: params.category_name, category_img: params.category_img });
+  db.category.create({
+    category_name: params.category_name,
+    category_img: params.category_img,
+  });
 }
 
 async function update(id, params) {
   const category = await getCategory(id);
   if (
     await db.category.findOne({
-      where: { category_name: params.category_name, 
-      category_id: !id,
-      },  
+      where: { category_name: params.category_name, category_id: !id },
     })
   ) {
-    fs.unlink(params.category_img, err => {
-      console.log('Xoá file thành công');
-    })
+    fs.unlink(params.category_img, (err) => {
+      console.log("Xoá file thành công");
+    });
     throw 'Category name "' + params.category_name + '" is Exist';
   }
 
-  if((params.category_img === undefined && category) || (params.category_img === '' && category )) {
+  if (
+    (params.category_img === undefined && category) ||
+    (params.category_img === "" && category)
+  ) {
     return await db.category.update(
-      { category_name: params.category_name,
-      },
+      { category_name: params.category_name },
       {
         where: {
           category_id: id,
@@ -89,12 +91,13 @@ async function update(id, params) {
     );
   }
   if (category && params.category_img !== undefined) {
-      fs.unlink(category.category_img, err => {
-        console.log('Xoá file 1 thành công');
-      })
+    fs.unlink(category.category_img, (err) => {
+      console.log("Xoá file 1 thành công");
+    });
     return await db.category.update(
-      { category_name: params.category_name,
-         category_img: params.category_img
+      {
+        category_name: params.category_name,
+        category_img: params.category_img,
       },
       {
         where: {

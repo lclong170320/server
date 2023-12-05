@@ -1,10 +1,9 @@
-import Sequelize from "sequelize";
-import mysql2 from "mysql2";
+const { Sequelize } = require("sequelize");
+
 // Option 3: Passing parameters separately (other dialects)
 const sequelize = new Sequelize("sieuthimini", "root", null, {
   host: "localhost",
   dialect: "mysql",
-  dialectModule: mysql2,
   logging: false,
 });
 
@@ -17,4 +16,4 @@ let conNectDB = async () => {
   }
 };
 
-export default conNectDB;
+module.exports = conNectDB;
