@@ -32,6 +32,6 @@ app.use((req, res, next) => {
 let port = process.env.PORT;
 
 app.listen(port, () => {
-  console.log("backend note js cổng :" + port);
+  console.log("backend node js cổng :" + port);
   console.log("khoi tao thanh cong web : http://localhost:3000/");
 });
