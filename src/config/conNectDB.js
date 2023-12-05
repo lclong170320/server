@@ -1,9 +1,10 @@
 const { Sequelize } = require("sequelize");
-
+const mysql2 = require("mysql2");
 // Option 3: Passing parameters separately (other dialects)
 const sequelize = new Sequelize("sieuthimini", "root", null, {
   host: "localhost",
   dialect: "mysql",
+  dialectModule: mysql2,
   logging: false,
 });
 

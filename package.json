@@ -32,11 +32,11 @@
     "md5": "^2.2.1",
     "morgan": "~1.8.1",
     "multer": "^1.4.5-lts.1",
-    "mysql2": "^2.3.3",
+    "mysql2": "^3.6.5",
     "nodemailer": "^6.8.0",
     "nodemailer-express-handlebars": "^5.0.0",
     "qs": "^6.7.0",
-    "sequelize": "^6.21.3",
+    "sequelize": "^6.35.1",
     "serve-favicon": "^2.4.5",
     "sha256": "^0.2.0"
   },
@@ -44,6 +44,6 @@
     "@babel/core": "^7.18.9",
     "@babel/preset-env": "^7.18.9",
     "nodemon": "^2.0.19",
-    "sequelize-cli": "^6.4.1"
+    "sequelize-cli": "^6.6.2"
   }
 }
